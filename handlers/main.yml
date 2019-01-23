@@ -7,6 +7,8 @@
   ignore_errors: true
   args:
     warn: false
+  when:
+    no_restart is not defined
 
 - name: generate auditd
   become: 'yes'
@@ -19,12 +21,16 @@
   service:
     name: systemd-sysctl
     state: restarted
+  when:
+    no_restart is not defined
 
 - name: reload systemd
   become: 'yes'
   become_method: sudo
   systemd:
     daemon_reload: 'yes'
+  when:
+    no_restart is not defined
 
 - name: rkhunter propupd
   become: 'yes'
@@ -38,6 +44,8 @@
     name: aidecheck.timer
     enabled: 'yes'
     state: started
+  when:
+    no_restart is not defined
 
 - name: disable aidecheck
   become: 'yes'
@@ -46,6 +54,8 @@
     name: aidecheck.timer
     state: stopped
     enabled: 'no'
+  when:
+    no_restart is not defined
 
 - name: mask aidecheck
   become: 'yes'
@@ -55,6 +65,8 @@
     masked: 'yes'
     stated: stopped
     enabled: 'no'
+  when:
+    no_restart is not defined
 
 - name: restart sshd
   become: 'yes'
@@ -62,6 +74,8 @@
   service:
     name: sshd
     state: restarted
+  when:
+    no_restart is not defined
 
 - name: apt-get autoremove
   become: 'yes'
@@ -83,6 +97,8 @@
     masked: 'yes'
     enabled: 'no'
     state: stopped
+  when:
+    no_restart is not defined
 
 - name: mask motdnews
   become: 'yes'
@@ -92,6 +108,8 @@
     masked: 'yes'
     enabled: 'no'
     state: stopped
+  when:
+    no_restart is not defined
 
 # https://github.com/ansible/ansible/pull/31450#issuecomment-352889579
 - name: yum clean
@@ -108,6 +126,8 @@
     name: haveged
     enabled: 'yes'
     state: started
+  when:
+    no_restart is not defined
 
 - name: update authconfig
   become: 'yes'
