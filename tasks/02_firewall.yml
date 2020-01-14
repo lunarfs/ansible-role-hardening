@@ -96,7 +96,7 @@
   ufw:
     rule: allow
     src: "{{ item }}"
-    port: 22
+    port: "{{ sshd_port|int }}"
     proto: tcp
   with_items:
     - "{{ sshd_admin_net }}"
@@ -111,6 +111,7 @@
   become_method: sudo
   ufw:
     state: enabled
+    direction: incoming
     policy: deny
     logging: low
   when: ansible_os_family == "Debian"
@@ -157,10 +158,11 @@
   become: 'yes'
   become_method: sudo
   firewalld:
-    service: ssh
-    permanent: true
-    state: enabled
+    port: "{{ sshd_port }}/tcp"
     zone: public
+    immediate: 'yes'
+    permanent: 'true'
+    state: enabled
   when: ansible_os_family == "RedHat"
   tags:
     - firewalld
