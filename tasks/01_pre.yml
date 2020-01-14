@@ -1,5 +1,7 @@
 ---
 - name: create custom facts directory
+  become: 'yes'
+  become_method: sudo
   file:
     path: /etc/ansible/facts.d
     recurse: true
@@ -7,6 +9,8 @@
     mode: 0755
     owner: root
     group: root
+  tags:
+    - fact
 
 - name: systemd version fact
   become: 'yes'
@@ -37,6 +41,23 @@
     - rdrand
     - fact
 
-- name: use custom facts
+- name: reboot required fact
+  become: 'yes'
+  become_method: sudo
+  template:
+    src: etc/ansible/facts.d/reboot_required.fact
+    dest: /etc/ansible/facts.d/reboot_required.fact
+    backup: 'yes'
+    mode: 0755
+    owner: root
+    group: root
+  when: ansible_distribution == "Ubuntu"
+  tags:
+    - reboot
+    - fact
+
+- name: update facts
   setup: ~
+  tags:
+    - fact
 ...
