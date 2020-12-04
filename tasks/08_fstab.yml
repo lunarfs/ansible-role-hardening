@@ -66,4 +66,15 @@
     masked: 'no'
   when:
     no_restart is not defined
+
+- name: enable /tmp
+  become: 'yes'
+  become_method: sudo
+  service:
+    name: tmp.mount
+    enabled: 'yes'
+    masked: 'no'
+  when:
+    no_restart is not defined
+
 ...
